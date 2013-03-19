@@ -168,6 +168,6 @@ You can find a copy of this license at http://www.opensource.org/licenses/mit
 
 
 <!-- Links -->
-[travis]: https://travis-ci.org/newtonjs/frame
-[travis-master]: https://travis-ci.org/newtonjs/frame.png?branch=master
+[travis]: https://travis-ci.org/adlawson/wesley
+[travis-master]: https://travis-ci.org/adlawson/wesley.png?branch=master
 [vagrant]: http://vagrantup.com
