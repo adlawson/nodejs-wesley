@@ -2,6 +2,7 @@
 
 
 **Version:** *0.1.0*<br/>
+**Master build:** [![Master branch build status][travis-master]][travis]
 
 
 ### Wesley? What the frig? ###
@@ -122,6 +123,28 @@ server.on('connection', function (client) {
 ```
 
 
+### Command line interface ###
+I can tell you're super excited to start working on your web socket server.
+One thing you may find useful is a client to start interacting with.
+This command line client will hopefully give you what you need to get started.
+```bash
+$ wesley --help
+
+  Usage: wesley [options]
+
+  Options:
+
+    -h, --help                output usage information
+    -V, --version             output the version number
+    -u, --uri <string>        host address
+    -p, --protocol <integer>  web socket protocol
+
+  Default:
+
+    wesley --uri ws://localhost:3000 --protocol 13
+```
+
+
 ### Contributing ###
 I accept contributions to the source via Pull Request,
 but passing unit tests must be included before it will be considered for merge.
@@ -145,4 +168,6 @@ You can find a copy of this license at http://www.opensource.org/licenses/mit
 
 
 <!-- Links -->
+[travis]: https://travis-ci.org/newtonjs/frame
+[travis-master]: https://travis-ci.org/newtonjs/frame.png?branch=master
 [vagrant]: http://vagrantup.com

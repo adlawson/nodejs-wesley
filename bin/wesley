@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+
+/*
+ * Wesley
+ * http://github.com/adlawson/wesley
+ * Copyright (c) 2013 Andrew Lawson
+ * MIT Licensed
+ */
+var wesley = require('../');
+var pkg = require('../package.json');
+var program = require('commander');
+var colors = require('colors');
+var WebSocket = require('ws');
+
+// Client options
+var options = {
+  uri: 'ws://localhost:3000',
+  protocol: 13,
+};
+
+// Command line options
+program
+  .version(pkg.version)
+  .usage('[options]')
+  .option('-u, --uri <string>', 'host address')
+  .option('-p, --protocol <integer>', 'web socket protocol', parseInt)
+  .on('--help', function() {
+    var command = 'wesley'
+      + ' --uri ' + options.uri
+      + ' --protocol ' + options.protocol;
+    console.log('  Default:');
+    console.log('');
+    console.log('    ' + command);
+    console.log('');
+    })
+  .parse(process.argv);
+
+/**
+ * Readline console
+ * @param {Stream} stdout
+ * @param {Stream} stdin
+ */
+function Console(stdout, stdin) {
+  var self = this;
+  this.stdout = stdout;
+  this.stdin = stdin;
+  this.interface = require('readline').createInterface({
+    input: this.stdin,
+    output: this.stdout
+  });
+
+  this.interface.on('line', function(data) {
+    self.emit('line', data);
+    self.interface.prompt();
+  });
+  this.interface.on('close', function() {
+    self.emit('close');
+    self.clear();
+  });
+  this.prompt();
+};
+
+/**
+ * Inherit from EventEmitter.prototype
+ */
+Console.prototype = Object.create(EventEmitter.prototype);
+
+/**
+ * Clear current line
+ */
+Console.prototype.clear = function() {
+  this.stdout.write('\u001B[1K');
+};
+
+/**
+ * Prompt
+ */
+Console.prototype.prompt = function() {
+  this.interface.prompt();
+};
+
+/**
+ * Write data to terminal
+ * @param {String} data
+ */
+Console.prototype.write = function(data) {
+  this.clear();
+  this.stdout.write(data + '\n');
+  this.prompt();
+}
+
+/**
+ * Create web socket client
+ */
+var ws = new WebSocket((program.uri || options.uri), {
+  protocol: (program.protocol || options.protocol)
+});
+ws.on('open', function() {
+  var readline = new Console(process.stdout, process.stdin);
+
+  readline.write('Connected to '.green + options.uri.green);
+  readline.on('line', function(data) {
+    ws.send(data, {mask:true});
+    readline.prompt();
+  });
+  readline.on('close', function() {
+    try {
+      readline.write('Bye!'.yellow);
+      ws.close();
+    } catch (e) {}
+    process.exit();
+  });
+
+  ws.on('close', function() {
+    readline.write('Disconnected from server'.yellow);
+    process.exit();
+  });
+  ws.on('message', function(data) {
+    readline.write('< ' + data.cyan);
+  });
+});
