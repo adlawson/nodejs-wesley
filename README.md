@@ -14,7 +14,7 @@ $ npm install wesley
 
 ### Usage ###
 ```js
-var server = require('wesley').listen(1234);
+var server = require('wesley').listen(3000);
 
 server.on('connection', function (client) {
 
@@ -30,7 +30,7 @@ server.on('connection', function (client) {
 ### Pooling ###
 Sometimes it's necessary to maintain logical pools of clients (AKA namespaces, rooms, topics, etc).
 ```js
-var server = require('wesley').listen(1234);
+var server = require('wesley').listen(3000);
 
 server.on('connection', function (client, pool) {
 
@@ -44,14 +44,14 @@ server.on('connection', function (client, pool) {
 
 Pooling is done when the client connects to a route on the host.
 ```
-ws://localhost:1234/            # Server and / events
-ws://localhost:1234/pool        # Server and /pool events
-ws://localhost:1234/pool/child  # Server and /pool/child events
+ws://localhost:3000/            # Server and / events
+ws://localhost:3000/pool        # Server and /pool events
+ws://localhost:3000/pool/child  # Server and /pool/child events
 ```
 
 You can also handle events differently depending on the pool.
 ```js
-var server = require('wesley').listen(1234);
+var server = require('wesley').listen(3000);
 
 server.on('connection', function (client, pool) {
 
@@ -72,7 +72,7 @@ This way you can replace the default emitting of `message` with your own.
 var router = function(message, callback) {
     callback('echo', message);
 };
-var server = require('wesley').listen(1234).router(router);
+var server = require('wesley').listen(3000).router(router);
 
 server.on('connection', function (client) {
 
@@ -90,7 +90,7 @@ var router = function(json, callback) {
     callback(data.type, data);
 };
 var server = require('wesley')
-    .listen(1234)
+    .listen(3000)
     .router(router);
 
 server.on('connection', function (client) {
@@ -112,7 +112,7 @@ var renderer = function(type, message, callback) {
     callback(packed);
 };
 var server = require('wesley')
-    .listen(1234)
+    .listen(3000)
     .renderer(renderer);
 
 server.on('connection', function (client) {
