@@ -4,6 +4,14 @@
   "version": "0.1.0",
   "homepage": "http://wesleyjs.org",
 
+  "keywords": [
+    "client",
+    "pool",
+    "server",
+    "ws",
+    "web socket"
+  ],
+
   "author": {
     "name": "Andrew Lawson",
     "url": "http://adlawson.com"
