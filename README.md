@@ -1,7 +1,7 @@
 # Wesley #
 
 
-**Version:** *0.1.1*<br/>
+**Version:** *0.1.2*<br/>
 **Master build:** [![Master branch build status][travis-master]][travis]
 
 
