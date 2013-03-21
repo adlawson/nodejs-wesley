@@ -65,14 +65,16 @@ server.on('connection', function (client, pool) {
 ```
 
 
-### Routing ###
-Routing is a way to take a message sent from the client and emit your desired event.
-This way you can replace the default emitting of `message` with your own.
+### Inbound messages ###
+By default, a Wesley client will emit `message` for every message sent from the client.
+You can entirely replace this behaviour at your leisure.
 ```js
-var router = function(message, callback) {
+var inbound = function(message, callback) {
     callback('echo', message);
 };
-var server = require('wesley').listen(3000).router(router);
+var server = require('wesley')
+    .listen(3000)
+    .in(inbound);
 
 server.on('connection', function (client) {
 
@@ -83,15 +85,15 @@ server.on('connection', function (client) {
 });
 ```
 
-Using routing, you can also handle more complicated messages than simple strings.
+This also means you could handle more complicated messages than simple strings.
 ```js
-var router = function(json, callback) {
+var inbound = function(json, callback) {
     var data = JSON.parse(json);
-    callback(data.type, data);
+    callback('message', data);
 };
 var server = require('wesley')
     .listen(3000)
-    .router(router);
+    .in(inbound);
 
 server.on('connection', function (client) {
 
@@ -103,17 +105,16 @@ server.on('connection', function (client) {
 ```
 
 
-### Rendering ###
-You can only send string data to clients, so by using rendering you can format
-your data just before it's sent.
+### Outbound messages ###
+In much the same way as handling inbound messages, you can also handle outbound messages.
 ```js
-var renderer = function(type, message, callback) {
+var outbound = function(type, message, callback) {
     var packed = JSON.stringify{type:type, body:message};
     callback(packed);
 };
 var server = require('wesley')
     .listen(3000)
-    .renderer(renderer);
+    .out(outbound);
 
 server.on('connection', function (client) {
 
