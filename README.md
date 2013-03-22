@@ -42,24 +42,27 @@ server.on('connection', function (client, pool) {
 });
 ```
 
-Pooling is done when the client connects to a route on the host.
-```
+The default pooling strategy separates clients based on the path they connect to.
+```bash
 ws://localhost:3000/            # Server and / events
 ws://localhost:3000/pool        # Server and /pool events
 ws://localhost:3000/pool/child  # Server and /pool/child events
 ```
 
-You can also handle events differently depending on the pool.
+This behavoiur can be overridden by passing in your own handler.
+The callback expects to be called with the name of the pool to join.
 ```js
-var server = require('wesley').listen(3000);
+var pooling = function(client, callback) {
+    callback('pool-name');
+};
+var server = require('wesley')
+    .listen(3000)
+    .with(pooling);
 
 server.on('connection', function (client, pool) {
 
-    if ('/' !== pool.path) {
-        return client.send('Pooling is not enabled on this server.');
-    }
-
     // handle the client
+    client.send('You\'ve just joined the ' + pool.name + ' pool.');
 
 });
 ```
