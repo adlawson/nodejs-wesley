@@ -8,8 +8,10 @@
     "client",
     "pool",
     "server",
+    "socket",
     "ws",
-    "web socket"
+    "web socket",
+    "websocket"
   ],
 
   "author": {
