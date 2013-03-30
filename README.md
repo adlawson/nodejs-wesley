@@ -16,7 +16,7 @@ $ npm install wesley
 ```js
 var server = require('wesley').listen(3000);
 
-server.on('connection', function (client) {
+server.on('connection', function(client) {
 
     // Relay data to all clients on the server
     client.on('data', function(data) {
@@ -32,7 +32,7 @@ Sometimes it's necessary to maintain logical pools of clients (AKA namespaces, r
 ```js
 var server = require('wesley').listen(3000);
 
-server.on('connection', function (client, pool) {
+server.on('connection', function(client, pool) {
 
     // Relay data to the current pool of clients
     client.on('data', function(data) {
@@ -57,7 +57,7 @@ var pooling = function(client, callback) {
 };
 var server = require('wesley').listen(3000).pool(pooling);
 
-server.on('connection', function (client, pool) {
+server.on('connection', function(client, pool) {
 
     // Handle the client
     client.write('You\'ve just joined the ' + pool.name + ' pool.');
@@ -75,7 +75,7 @@ var inbound = function(data, callback) {
 };
 var server = require('wesley').listen(3000).in(inbound);
 
-server.on('connection', function (client) {
+server.on('connection', function(client) {
 
     client.on('message', function(message) {
         // Handle the message
@@ -92,7 +92,7 @@ var inbound = function(json, callback) {
 };
 var server = require('wesley').listen(3000).in(inbound);
 
-server.on('connection', function (client) {
+server.on('connection', function(client) {
 
     client.on('data', function(data) {
         // Handle the data
@@ -111,10 +111,33 @@ var outbound = function(type, message, callback) {
 };
 var server = require('wesley').listen(3000).out(outbound);
 
-server.on('connection', function (client) {
+server.on('connection', function(client) {
 
     // Send data to the client
     client.write('message', 'Derp.');
+
+});
+```
+
+
+### Transports ###
+As Wesley is a web socket server, it uses a socket transport by default.
+You can create custom transports by extending `wesley.Transport`.
+It is the job of the transport to proxy events listened to by the client
+or server. Please see the documentation for more detail (Coming soon).
+
+Once you have a client, using it is simple.
+```js
+var wesley = require('wesley');
+var server = new wesley.Server([
+    // An array of transports
+    new CustomTransport()
+]);
+
+server.on('connection', function(client, pool) {
+
+    // Client wraps the the transport the connection came through
+    client.write('Derp.');
 
 });
 ```
