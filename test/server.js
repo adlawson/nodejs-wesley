@@ -1,7 +1,6 @@
 var server = require('../lib/server');
 var events = require('events');
 var assert = require('chai').assert;
-var sinon  = require('sinon');
 
 suite('server:', function() {
   var instance, renderer, router, socket;
