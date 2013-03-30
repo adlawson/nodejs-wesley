@@ -1,47 +1,44 @@
 var client = require('../lib/client');
-var events = require('events');
+var Transport = require('../lib/transports/transport').Transport;
 var assert = require('chai').assert;
-var sinon  = require('sinon');
 
 suite('client:', function() {
-  var instance, renderer, router, socket;
+  var instance, transport;
 
   setup(function() {
-    renderer = sinon.spy();
-    router = sinon.spy();
-    socket = sinon.stub(new events.EventEmitter());
+    transport = new Transport();
   });
 
-  suite('isClient:', function() {
+  suite('is:', function() {
 
-    test('isClient is a function', function() {
-      assert.isFunction(client.isClient);
+    test('`is` is a function', function() {
+      assert.isFunction(client.is);
     });
 
-    test('isClient returns true when invoked with a valid client', function() {
-      assert.isTrue(client.isClient(new client.Client(socket, router, renderer)));
+    test('`is` returns true when invoked with a valid client', function() {
+      assert.isTrue(client.is(new client.Client(transport)));
     });
 
-    test('isClient returns false when invoked with an invalid client', function() {
-      assert.isFalse(client.isClient({}));
+    test('`is` returns false when invoked with an invalid client', function() {
+      assert.isFalse(client.is({}));
     });
 
   });
 
-  suite('assertClient:', function() {
+  suite('assert:', function() {
 
-    test('assertClient is a function', function() {
-      assert.isFunction(client.assertClient);
+    test('`assert` is a function', function() {
+      assert.isFunction(client.assert);
     });
 
-    test('assertClient returns client when invoked with a valid client', function() {
-      instance = new client.Client(socket, router, renderer);
-      assert.strictEqual(instance, client.assertClient(instance));
+    test('`assert` returns client when invoked with a valid client', function() {
+      instance = new client.Client(transport);
+      assert.strictEqual(instance, client.assert(instance));
     });
 
-    test('assertClient throws when invoked with an invalid client', function() {
+    test('`assert` throws when invoked with an invalid client', function() {
       assert.throws(function() {
-        client.assertClient({});
+        client.assert({});
       });
     });
 
