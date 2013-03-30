@@ -18,9 +18,9 @@ var server = require('wesley').listen(3000);
 
 server.on('connection', function (client) {
 
-    // Relay a message to all clients on the server
-    client.on('message', function (message) {
-        server.send(message);
+    // Relay data to all clients on the server
+    client.on('data', function(data) {
+        server.write(data);
     });
 
 });
@@ -34,9 +34,9 @@ var server = require('wesley').listen(3000);
 
 server.on('connection', function (client, pool) {
 
-    // Relay a message to the current pool of clients
-    client.on('message', function (message) {
-        pool.send(message);
+    // Relay data to the current pool of clients
+    client.on('data', function(data) {
+        pool.write(data);
     });
 
 });
@@ -55,34 +55,30 @@ The callback expects to be called with the name of the pool to join.
 var pooling = function(client, callback) {
     callback('pool-name');
 };
-var server = require('wesley')
-    .listen(3000)
-    .with(pooling);
+var server = require('wesley').listen(3000).pool(pooling);
 
 server.on('connection', function (client, pool) {
 
-    // handle the client
-    client.send('You\'ve just joined the ' + pool.name + ' pool.');
+    // Handle the client
+    client.write('You\'ve just joined the ' + pool.name + ' pool.');
 
 });
 ```
 
 
 ### Inbound messages ###
-By default, a Wesley client will emit `message` for every message sent from the client.
+By default, a Wesley client will emit `data` for every message sent from the client.
 You can entirely replace this behaviour at your leisure.
 ```js
-var inbound = function(message, callback) {
-    callback('echo', message);
+var inbound = function(data, callback) {
+    callback('message', data);
 };
-var server = require('wesley')
-    .listen(3000)
-    .in(inbound);
+var server = require('wesley').listen(3000).in(inbound);
 
 server.on('connection', function (client) {
 
-    client.on('echo', function(message) {
-        // handle the message
+    client.on('message', function(message) {
+        // Handle the message
     });
 
 });
@@ -92,16 +88,14 @@ This also means you could handle more complicated messages than simple strings.
 ```js
 var inbound = function(json, callback) {
     var data = JSON.parse(json);
-    callback('message', data);
+    callback('data', data);
 };
-var server = require('wesley')
-    .listen(3000)
-    .in(inbound);
+var server = require('wesley').listen(3000).in(inbound);
 
 server.on('connection', function (client) {
 
-    client.on('message', function(data) {
-        // handle the data
+    client.on('data', function(data) {
+        // Handle the data
     });
 
 });
@@ -115,19 +109,18 @@ var outbound = function(type, message, callback) {
     var packed = JSON.stringify{type:type, body:message};
     callback(packed);
 };
-var server = require('wesley')
-    .listen(3000)
-    .out(outbound);
+var server = require('wesley').listen(3000).out(outbound);
 
 server.on('connection', function (client) {
 
-    client.send('message', 'Derp.');
+    // Send data to the client
+    client.write('message', 'Derp.');
 
 });
 ```
 
 
-### Command line interface ###
+### Command line client ###
 I can tell you're super excited to start working on your web socket server.
 One thing you may find useful is a client to start interacting with.
 This command line client will hopefully give you what you need to get started.
