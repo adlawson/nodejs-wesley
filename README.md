@@ -101,6 +101,28 @@ server.on('connection', function(client) {
 });
 ```
 
+Wesley clients inherit from [EventEmitter2][event-emitter], so even more complex
+events can be listened to.
+```js
+var inbound = function(json, callback) {
+    var data = JSON.parse(json);
+    callback(['client', data.type], data);
+};
+var server = require('wesley').listen(3000).in(inbound);
+
+server.on('connection', function(client) {
+
+    client.on(['client', 'message'], function(data) {
+        // Handle data with `data.type === message`
+    });
+
+    client.on(['client', '*'], function(data) {
+        // Handle all client data
+    });
+
+});
+```
+
 
 ### Outbound messages ###
 In much the same way as handling inbound messages, you can also handle outbound messages.
@@ -191,3 +213,4 @@ You can find a copy of this license at http://www.opensource.org/licenses/mit
 [travis]: https://travis-ci.org/adlawson/wesley
 [travis-master]: https://travis-ci.org/adlawson/wesley.png?branch=master
 [vagrant]: http://vagrantup.com
+[event-emitter]: https://github.com/hij1nx/EventEmitter2
