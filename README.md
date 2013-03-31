@@ -70,8 +70,8 @@ server.on('connection', function(client, pool) {
 By default, a Wesley client will emit `data` for every message sent from the client.
 You can entirely replace this behaviour at your leisure.
 ```js
-var inbound = function(data, callback) {
-    callback('message', data);
+var inbound = function(data, emit) {
+    emit('message', data);
 };
 var server = require('wesley').listen(3000).in(inbound);
 
@@ -86,9 +86,9 @@ server.on('connection', function(client) {
 
 This also means you could handle more complicated messages than simple strings.
 ```js
-var inbound = function(json, callback) {
+var inbound = function(json, emit) {
     var data = JSON.parse(json);
-    callback('data', data);
+    emit('data', data);
 };
 var server = require('wesley').listen(3000).in(inbound);
 
@@ -104,9 +104,9 @@ server.on('connection', function(client) {
 Wesley clients inherit from [EventEmitter2][event-emitter], so even more complex
 events can be listened to.
 ```js
-var inbound = function(json, callback) {
+var inbound = function(json, emit) {
     var data = JSON.parse(json);
-    callback(['client', data.type], data);
+    emit(['client', data.type], data);
 };
 var server = require('wesley').listen(3000).in(inbound);
 
@@ -127,9 +127,9 @@ server.on('connection', function(client) {
 ### Outbound messages ###
 In much the same way as handling inbound messages, you can also handle outbound messages.
 ```js
-var outbound = function(type, message, callback) {
+var outbound = function(type, message, emit) {
     var packed = JSON.stringify{type:type, body:message};
-    callback(packed);
+    emit(packed);
 };
 var server = require('wesley').listen(3000).out(outbound);
 
