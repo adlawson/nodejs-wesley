@@ -1,7 +1,7 @@
 {
   "name": "wesley",
   "description": "Protocol compliant web socket server with some awesome extras.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "http://wesleyjs.org",
 
   "keywords": [
